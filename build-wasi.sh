@@ -41,7 +41,7 @@ make -C $REPODIR/wasi-libc \
 		SYSROOT=$WASI_SYSROOT \
     THREAD_MODEL=posix
 
-USR_SHARE_CMAKE=/usr/share/cmake
+USR_SHARE_CMAKE=$LLVM_PREFIX/share/cmake
 
 mkdir -p $USR_SHARE_CMAKE
 
@@ -160,6 +160,9 @@ CMAKE_MODULE_PATH=$USR_SHARE_CMAKE
 mkdir -p $CMAKE_MODULE_PATH/Platform
 echo "set(WASI 1)" > $CMAKE_MODULE_PATH/Platform/WASI.cmake
 
+mkdir -p /usr/share/cmake
+cp -rpf $USR_SHARE_CMAKE /usr/share/cmake
+
 cmake -G Ninja \
 		-DCMAKE_SYSROOT=$WASI_SYSROOT \
 		-DCMAKE_C_COMPILER_WORKS=ON \
@@ -243,8 +246,14 @@ cmake -G Ninja $(get_libcxx_cmake_flags ON) \
 		-DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi" \
 		-H"$LLVM_PROJ_DIR/runtimes" -B"$__dirname/build/libcxx-threads"
 cmake --build $__dirname/build/libcxx-threads
+
 cmake --install $__dirname/build/libcxx --prefix $WASI_SYSROOT
+cp -rpf $WASI_SYSROOT/include /usr/include/wasm32-wasi
+cp -rpf $WASI_SYSROOT/lib/wasm32-wasi /usr/lib/wasm32-wasi
+
 cmake --install $__dirname/build/libcxx-threads --prefix $WASI_SYSROOT
+cp -rpf $WASI_SYSROOT/include /usr/include/wasm32-wasi-threads
+cp -rpf $WASI_SYSROOT/lib/wasm32-wasi-threads /usr/lib/wasm32-wasi-threads
 
 # rm -rf $__dirname/build
 # rm -rf $REPODIR

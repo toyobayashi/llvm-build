@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 # SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update && \
-      apt-get install -y python3 git gcc g++ gdb cmake ninja-build make wget curl xz-utils bzip2 zip unzip gnupg && \
+      apt-get install -y python3 git gcc g++ gdb cmake ninja-build make wget curl xz-utils bzip2 zip unzip gnupg openjdk-11-jre-headless && \
       curl -sS https://apt.llvm.org/llvm-snapshot.gpg.key | gpg --dearmor > /etc/apt/trusted.gpg.d/llvm.gpg && \
       echo "deb [signed-by=/etc/apt/trusted.gpg.d/llvm.gpg] http://apt.llvm.org/jammy/ llvm-toolchain-jammy-16 main" >> /etc/apt/sources.list.d/llvm.list && \
       echo "deb-src [signed-by=/etc/apt/trusted.gpg.d/llvm.gpg] http://apt.llvm.org/jammy/ llvm-toolchain-jammy-16 main" >> /etc/apt/sources.list.d/llvm.list && \
@@ -16,15 +16,15 @@ RUN apt-get update && \
 
 WORKDIR /root
 
-RUN git clone --depth 1 --branch v0.39.3 https://github.com/nvm-sh/nvm.git /opt/.nvm && \
-      rm -rf /opt/.nvm/.git && \
-      chmod +x /opt/.nvm/nvm.sh && /opt/.nvm/nvm.sh && \
-      echo "export NVM_DIR=\"/opt/.nvm\"" >> $HOME/.bashrc && \
+RUN git clone --depth 1 --branch v0.39.3 https://github.com/nvm-sh/nvm.git /root/.nvm && \
+      rm -rf /root/.nvm/.git && \
+      chmod +x /root/.nvm/nvm.sh && /root/.nvm/nvm.sh && \
+      echo "export NVM_DIR=\"/root/.nvm\"" >> $HOME/.bashrc && \
       echo "[ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"" >> $HOME/.bashrc && \
       echo "[ -s \"\$NVM_DIR/bash_completion\" ] && \. \"\$NVM_DIR/bash_completion\"" >> $HOME/.bashrc && \
-      bash -c "source /opt/.nvm/nvm.sh && nvm install 20.4.0 && nvm use 20.4.0"
+      bash -c "source /root/.nvm/nvm.sh && nvm install 20.4.0 && nvm use 20.4.0"
 
-ENV NVM_DIR=/opt/.nvm \
+ENV NVM_DIR=/root/.nvm \
     EMSDK=/opt/emsdk \
     LLVM_PATH=/usr/lib/llvm-16 \
     WABT_PATH=/opt/wabt
