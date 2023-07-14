@@ -3,7 +3,13 @@ FROM ubuntu:22.04
 # SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update && \
-      apt-get install -y python3 git gcc g++ gdb cmake ninja-build make wget curl xz-utils bzip2 zip unzip && \
+      apt-get install -y python3 git gcc g++ gdb cmake ninja-build make wget curl xz-utils bzip2 zip unzip gnupg && \
+      curl -sS https://apt.llvm.org/llvm-snapshot.gpg.key | gpg --dearmor > /etc/apt/trusted.gpg.d/llvm.gpg && \
+      echo "deb [signed-by=/etc/apt/trusted.gpg.d/llvm.gpg] http://apt.llvm.org/jammy/ llvm-toolchain-jammy-${LLVM_VERSION} main" >> /etc/apt/sources.list.d/llvm.list && \
+      echo "deb-src [signed-by=/etc/apt/trusted.gpg.d/llvm.gpg] http://apt.llvm.org/jammy/ llvm-toolchain-jammy-${LLVM_VERSION} main" >> /etc/apt/sources.list.d/llvm.list && \
+      apt-get update && \
+      apt-get install -y clang-${LLVM_VERSION} lld-${LLVM_VERSION} && \
+      apt-get remove -y gnupg && \
       apt-get -y clean && \
       apt-get -y autoclean && \
       rm -rf /var/lib/apt/lists/*
@@ -20,7 +26,7 @@ RUN git clone --depth 1 --branch v0.39.3 https://github.com/nvm-sh/nvm.git /opt/
 
 ENV NVM_DIR=/opt/.nvm \
     EMSDK=/opt/emsdk \
-    LLVM_PATH=/opt/llvm \
+    LLVM_PATH=/usr/lib/llvm-16 \
     WABT_PATH=/opt/wabt
 
 RUN git clone https://github.com/emscripten-core/emsdk.git $EMSDK && \
@@ -40,7 +46,7 @@ RUN git clone https://github.com/emscripten-core/emsdk.git $EMSDK && \
 COPY ./*.sh ./tmp/
 
 RUN chmod +x ./tmp/*.sh && \
-    ./tmp/build-llvm.sh && \
+    ./tmp/build-wasi.sh && \
     ./tmp/build-wabt.sh && \
     rm -rf ./tmp
 
