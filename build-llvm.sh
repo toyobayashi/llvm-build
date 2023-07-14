@@ -2,7 +2,7 @@
 
 set -ex
 
-__dirname=$(cd dirname $0;pwd)
+__dirname=$(cd `dirname $0`;pwd)
 
 LLVM_VERSION_MAJOR=16
 LLVM_VERSION_MINOR=0

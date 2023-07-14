@@ -2,7 +2,7 @@
 
 set -ex
 
-__dirname=$(cd dirname $0;pwd)
+__dirname=$(cd `dirname $0`;pwd)
 
 WABT_VERSION_MAJOR=1
 WABT_VERSION_MINOR=0
