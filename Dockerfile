@@ -40,7 +40,7 @@ ENV LLVM_PATH=/usr/lib/llvm-16 \
     WABT_PATH=/opt/wabt
 
 RUN git clone https://github.com/emscripten-core/emsdk.git /root/emsdk && \
-      /root/emsdk install releases-3.1.43 && \
+      /root/emsdk/emsdk install releases-3.1.43 && \
       mv -f /root/emsdk/upstream/emscripten $EMSCRIPTEN_PATH && \
       mv -f /root/emsdk/upstream $BINARYEN_PATH && \
       echo "import os" >> $EMSCRIPTEN_PATH/.emscripten && \
