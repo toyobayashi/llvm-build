@@ -57,7 +57,8 @@ RUN git clone https://github.com/emscripten-core/emsdk.git /root/emsdk && \
 
 COPY --chmod=755 ./*.sh ./tmp/
 
-RUN ./tmp/build-wasi.sh && \
+RUN ./tmp/install-wasmtime.sh && \
+    ./tmp/build-wasi.sh && \
     ./tmp/build-wabt.sh && \
     rm -rf ./tmp
 
