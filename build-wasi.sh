@@ -161,7 +161,7 @@ mkdir -p $CMAKE_MODULE_PATH/Platform
 echo "set(WASI 1)" > $CMAKE_MODULE_PATH/Platform/WASI.cmake
 
 mkdir -p /usr/share/cmake
-cp -rpf $USR_SHARE_CMAKE /usr/share/cmake
+cp -rpf $USR_SHARE_CMAKE/* /usr/share/cmake
 
 # cmake -G Ninja \
 # 		-DCMAKE_SYSROOT=$WASI_SYSROOT \
@@ -255,7 +255,7 @@ cmake --install $__dirname/build/libcxx-threads --prefix $WASI_SYSROOT
 cp -rpf $WASI_SYSROOT/include /usr/include/wasm32-wasi-threads
 cp -rpf $WASI_SYSROOT/lib/wasm32-wasi-threads /usr/lib/wasm32-wasi-threads
 
-cp -rpf $WASI_SYSROOT/include/c++ /usr/include/
+cp -rpf $WASI_SYSROOT/include/c++/* /usr/include/c++
 
 # rm -rf $__dirname/build
 # rm -rf $REPODIR
