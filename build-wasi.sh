@@ -5,12 +5,12 @@ set -ex
 __dirname=$(cd `dirname $0`;pwd)
 
 LLVM_VERSION_MAJOR=16
-LLVM_VERSION_MINOR=0
-LLVM_VERSION_PATCH=6
-CLANG_VERSION=$LLVM_VERSION_MAJOR
+LLVM_PREFIX=/usr/lib/llvm-$LLVM_VERSION_MAJOR
+CLANG_VERSION=`$LLVM_PREFIX/bin/clang -v 2> >(grep -Eo 'clang version [0-9]+\.[0-9]+\.[0-9]+') | awk '{print $3}'`
+LLVM_VERSION_MINOR=`echo $CLANG_VERSION | awk -F'.' '{print $2}'`
+LLVM_VERSION_PATCH=`echo $CLANG_VERSION | awk -F'.' '{print $3}'`
 LLVM_TAG="llvmorg-$LLVM_VERSION_MAJOR.$LLVM_VERSION_MINOR.$LLVM_VERSION_PATCH"
 
-LLVM_PREFIX=/usr/lib/llvm-$CLANG_VERSION
 WASI_SYSROOT=$LLVM_PREFIX/share/wasi-sysroot
 
 REPODIR=$__dirname/.repo
@@ -180,11 +180,11 @@ cp -rpf $USR_SHARE_CMAKE/* /usr/share/cmake
 # 		-DWASI_SDK_PREFIX=$LLVM_PREFIX \
 # 		-DLLVM_CONFIG_PATH=$LLVM_PREFIX/bin/llvm-config \
 # 		-DCOMPILER_RT_OS_DIR=wasi \
-# 		-DCMAKE_INSTALL_PREFIX=$LLVM_PREFIX/lib/clang/$CLANG_VERSION \
+# 		-DCMAKE_INSTALL_PREFIX=$LLVM_PREFIX/lib/clang/$LLVM_VERSION_MAJOR \
 # 		-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
 #     -H"$LLVM_PROJ_DIR/compiler-rt/lib/builtins" -B"$__dirname/build/compiler_rt"
 # cmake --build $__dirname/build/compiler_rt
-# cmake --install $__dirname/build/compiler_rt --prefix $LLVM_PREFIX/lib/clang/$CLANG_VERSION
+# cmake --install $__dirname/build/compiler_rt --prefix $LLVM_PREFIX/lib/clang/$LLVM_VERSION_MAJOR
 
 get_libcxx_cmake_flags () {
 	local args="-DCMAKE_C_COMPILER_WORKS=ON \
