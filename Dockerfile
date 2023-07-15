@@ -32,7 +32,8 @@ RUN git clone --depth 1 --branch v0.39.3 https://github.com/nvm-sh/nvm.git /root
       cp -rpf /root/.nvm/versions/node/v20.4.0/include/* /usr/local/include && \
       cp -rpf /root/.nvm/versions/node/v20.4.0/lib/* /usr/local/lib && \
       cp -rpf /root/.nvm/versions/node/v20.4.0/share/* /usr/local/share && \
-      rm -rf /root/.nvm
+      rm -rf /root/.nvm && \
+      rm -rf /root/.npm
 
 ENV LLVM_PATH=/usr/lib/llvm-16 \
     BINARYEN_PATH=/opt/binaryen \
