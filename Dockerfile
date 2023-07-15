@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 # SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update && \
-      apt-get install -y python3 git gcc g++ gdb cmake ninja-build make wget curl xz-utils bzip2 zip unzip gnupg openjdk-11-jre-headless && \
+      apt-get install -y vim file python3 git gcc g++ gdb cmake ninja-build make wget curl xz-utils bzip2 zip unzip gnupg openjdk-11-jre-headless && \
       curl -sS https://apt.llvm.org/llvm-snapshot.gpg.key | gpg --dearmor > /etc/apt/trusted.gpg.d/llvm.gpg && \
       echo "deb [signed-by=/etc/apt/trusted.gpg.d/llvm.gpg] http://apt.llvm.org/jammy/ llvm-toolchain-jammy-16 main" >> /etc/apt/sources.list.d/llvm.list && \
       echo "deb-src [signed-by=/etc/apt/trusted.gpg.d/llvm.gpg] http://apt.llvm.org/jammy/ llvm-toolchain-jammy-16 main" >> /etc/apt/sources.list.d/llvm.list && \
