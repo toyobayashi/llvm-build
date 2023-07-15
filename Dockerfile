@@ -16,32 +16,44 @@ RUN apt-get update && \
 
 WORKDIR /root
 
+# RUN git clone --depth 1 --branch v0.39.3 https://github.com/nvm-sh/nvm.git /root/.nvm && \
+#       rm -rf /root/.nvm/.git && \
+#       chmod +x /root/.nvm/nvm.sh && /root/.nvm/nvm.sh && \
+#       echo "export NVM_DIR=\"/root/.nvm\"" >> $HOME/.bashrc && \
+#       echo "[ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"" >> $HOME/.bashrc && \
+#       echo "[ -s \"\$NVM_DIR/bash_completion\" ] && \. \"\$NVM_DIR/bash_completion\"" >> $HOME/.bashrc && \
+#       bash -c "source /root/.nvm/nvm.sh && nvm install 20.4.0 && nvm use 20.4.0"
+
 RUN git clone --depth 1 --branch v0.39.3 https://github.com/nvm-sh/nvm.git /root/.nvm && \
       rm -rf /root/.nvm/.git && \
       chmod +x /root/.nvm/nvm.sh && /root/.nvm/nvm.sh && \
-      echo "export NVM_DIR=\"/root/.nvm\"" >> $HOME/.bashrc && \
-      echo "[ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"" >> $HOME/.bashrc && \
-      echo "[ -s \"\$NVM_DIR/bash_completion\" ] && \. \"\$NVM_DIR/bash_completion\"" >> $HOME/.bashrc && \
-      bash -c "source /root/.nvm/nvm.sh && nvm install 20.4.0 && nvm use 20.4.0"
+      bash -c "source /root/.nvm/nvm.sh && nvm install 20.4.0" && \
+      cp -rpf /root/.nvm/versions/node/v20.4.0/bin/* /usr/local/bin && \
+      cp -rpf /root/.nvm/versions/node/v20.4.0/include/* /usr/local/include && \
+      cp -rpf /root/.nvm/versions/node/v20.4.0/lib/* /usr/local/lib && \
+      cp -rpf /root/.nvm/versions/node/v20.4.0/share/* /usr/local/share && \
+      rm -rf /root/.nvm
 
-ENV NVM_DIR=/root/.nvm \
-    EMSDK=/opt/emsdk \
-    LLVM_PATH=/usr/lib/llvm-16 \
+ENV LLVM_PATH=/usr/lib/llvm-16 \
+    BINARYEN_PATH=/opt/binaryen \
+    EMSCRIPTEN_PATH=/opt/emscripten \
     WABT_PATH=/opt/wabt
 
-RUN git clone https://github.com/emscripten-core/emsdk.git $EMSDK && \
-      cd $EMSDK && \
-      $EMSDK/emsdk install releases-3.1.43 && \
-      echo "import os" >> $EMSDK/upstream/emscripten/.emscripten && \
-      echo "EMSCRIPTEN_ROOT = os.path.join(os.getenv('EMSDK'), 'upstream/emscripten')" >> $EMSDK/upstream/emscripten/.emscripten && \
-      echo "NODE_JS = 'node'" >> $EMSDK/upstream/emscripten/.emscripten && \
-      echo "PYTHON = 'python3'" >> $EMSDK/upstream/emscripten/.emscripten && \
-      echo "JAVA = 'java'" >> $EMSDK/upstream/emscripten/.emscripten && \
-      echo "LLVM_ROOT = os.path.join(os.getenv('EMSDK'), 'upstream/bin')" >> $EMSDK/upstream/emscripten/.emscripten && \
-      echo "BINARYEN_ROOT = os.path.join(os.getenv('EMSDK'), 'upstream')" >> $EMSDK/upstream/emscripten/.emscripten && \
-      echo "COMPILER_ENGINE = NODE_JS" >> $EMSDK/upstream/emscripten/.emscripten && \
-      echo "JS_ENGINES = [NODE_JS]" >> $EMSDK/upstream/emscripten/.emscripten && \
-      $EMSDK/upstream/emscripten/emcc -v
+RUN git clone https://github.com/emscripten-core/emsdk.git /root/emsdk && \
+      /root/emsdk install releases-3.1.43 && \
+      mv -f /root/emsdk/upstream/emscripten $EMSCRIPTEN_PATH && \
+      mv -f /root/emsdk/upstream $BINARYEN_PATH && \
+      echo "import os" >> $EMSCRIPTEN_PATH/.emscripten && \
+      echo "EMSCRIPTEN_ROOT = os.getenv('EMSCRIPTEN_PATH')" >> $EMSCRIPTEN_PATH/.emscripten && \
+      echo "NODE_JS = 'node'" >> $EMSCRIPTEN_PATH/.emscripten && \
+      echo "PYTHON = 'python3'" >> $EMSCRIPTEN_PATH/.emscripten && \
+      echo "JAVA = 'java'" >> $EMSCRIPTEN_PATH/.emscripten && \
+      echo "LLVM_ROOT = os.path.join(os.getenv('BINARYEN_PATH'), 'bin')" >> $EMSCRIPTEN_PATH/.emscripten && \
+      echo "BINARYEN_ROOT = os.getenv('BINARYEN_PATH')" >> $EMSCRIPTEN_PATH/.emscripten && \
+      echo "COMPILER_ENGINE = NODE_JS" >> $EMSCRIPTEN_PATH/.emscripten && \
+      echo "JS_ENGINES = [NODE_JS]" >> $EMSCRIPTEN_PATH/.emscripten && \
+      rm -rf /root/emsdk && \
+      $EMSCRIPTEN_PATH/emcc -v
 
 COPY --chmod=755 ./*.sh ./tmp/
 
@@ -49,6 +61,6 @@ RUN ./tmp/build-wasi.sh && \
     ./tmp/build-wabt.sh && \
     rm -rf ./tmp
 
-ENV PATH="/root/.nvm/versions/node/v20.4.0/bin:$LLVM_PATH/bin:$PATH:$EMSDK:$EMSDK/upstream/emscripten:$EMSDK/upstream/bin:$WABT_PATH/bin"
+ENV PATH="$LLVM_PATH/bin:$PATH:$EMSCRIPTEN_PATH:$BINARYEN_PATH/bin:$WABT_PATH/bin"
 
 CMD ["/bin/bash"]
