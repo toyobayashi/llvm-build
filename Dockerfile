@@ -43,13 +43,12 @@ RUN git clone https://github.com/emscripten-core/emsdk.git $EMSDK && \
       echo "JS_ENGINES = [NODE_JS]" >> $EMSDK/upstream/emscripten/.emscripten && \
       $EMSDK/upstream/emscripten/emcc -v
 
-COPY ./*.sh ./tmp/
+COPY --chmod=755 ./*.sh ./tmp/
 
-RUN chmod +x ./tmp/*.sh && \
-    ./tmp/build-wasi.sh && \
+RUN ./tmp/build-wasi.sh && \
     ./tmp/build-wabt.sh && \
     rm -rf ./tmp
 
-ENV PATH="$LLVM_PATH/bin:$PATH:$EMSDK:$EMSDK/upstream/emscripten:$EMSDK/upstream/bin:$WABT_PATH/bin"
+ENV PATH="/root/.nvm/versions/node/v20.4.0/bin:$LLVM_PATH/bin:$PATH:$EMSDK:$EMSDK/upstream/emscripten:$EMSDK/upstream/bin:$WABT_PATH/bin"
 
 CMD ["/bin/bash"]

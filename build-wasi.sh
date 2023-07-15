@@ -163,28 +163,28 @@ echo "set(WASI 1)" > $CMAKE_MODULE_PATH/Platform/WASI.cmake
 mkdir -p /usr/share/cmake
 cp -rpf $USR_SHARE_CMAKE /usr/share/cmake
 
-cmake -G Ninja \
-		-DCMAKE_SYSROOT=$WASI_SYSROOT \
-		-DCMAKE_C_COMPILER_WORKS=ON \
-		-DCMAKE_CXX_COMPILER_WORKS=ON \
-		-DCMAKE_AR=$LLVM_PREFIX/bin/llvm-ar \
-		-DCMAKE_MODULE_PATH=$CMAKE_MODULE_PATH \
-		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
-		-DCMAKE_TOOLCHAIN_FILE=$USR_SHARE_CMAKE/wasi-sdk.cmake \
-		-DCOMPILER_RT_BAREMETAL_BUILD=On \
-		-DCOMPILER_RT_BUILD_XRAY=OFF \
-		-DCOMPILER_RT_INCLUDE_TESTS=OFF \
-		-DCOMPILER_RT_HAS_FPIC_FLAG=OFF \
-		-DCOMPILER_RT_ENABLE_IOS=OFF \
-		-DCOMPILER_RT_DEFAULT_TARGET_ONLY=On \
-		-DWASI_SDK_PREFIX=$LLVM_PREFIX \
-		-DLLVM_CONFIG_PATH=$LLVM_PREFIX/bin/llvm-config \
-		-DCOMPILER_RT_OS_DIR=wasi \
-		-DCMAKE_INSTALL_PREFIX=$LLVM_PREFIX/lib/clang/$CLANG_VERSION \
-		-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-    -H"$LLVM_PROJ_DIR/compiler-rt/lib/builtins" -B"$__dirname/build/compiler_rt"
-cmake --build $__dirname/build/compiler_rt
-cmake --install $__dirname/build/compiler_rt --prefix $LLVM_PREFIX/lib/clang/$CLANG_VERSION
+# cmake -G Ninja \
+# 		-DCMAKE_SYSROOT=$WASI_SYSROOT \
+# 		-DCMAKE_C_COMPILER_WORKS=ON \
+# 		-DCMAKE_CXX_COMPILER_WORKS=ON \
+# 		-DCMAKE_AR=$LLVM_PREFIX/bin/llvm-ar \
+# 		-DCMAKE_MODULE_PATH=$CMAKE_MODULE_PATH \
+# 		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+# 		-DCMAKE_TOOLCHAIN_FILE=$USR_SHARE_CMAKE/wasi-sdk.cmake \
+# 		-DCOMPILER_RT_BAREMETAL_BUILD=On \
+# 		-DCOMPILER_RT_BUILD_XRAY=OFF \
+# 		-DCOMPILER_RT_INCLUDE_TESTS=OFF \
+# 		-DCOMPILER_RT_HAS_FPIC_FLAG=OFF \
+# 		-DCOMPILER_RT_ENABLE_IOS=OFF \
+# 		-DCOMPILER_RT_DEFAULT_TARGET_ONLY=On \
+# 		-DWASI_SDK_PREFIX=$LLVM_PREFIX \
+# 		-DLLVM_CONFIG_PATH=$LLVM_PREFIX/bin/llvm-config \
+# 		-DCOMPILER_RT_OS_DIR=wasi \
+# 		-DCMAKE_INSTALL_PREFIX=$LLVM_PREFIX/lib/clang/$CLANG_VERSION \
+# 		-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+#     -H"$LLVM_PROJ_DIR/compiler-rt/lib/builtins" -B"$__dirname/build/compiler_rt"
+# cmake --build $__dirname/build/compiler_rt
+# cmake --install $__dirname/build/compiler_rt --prefix $LLVM_PREFIX/lib/clang/$CLANG_VERSION
 
 get_libcxx_cmake_flags () {
 	local args="-DCMAKE_C_COMPILER_WORKS=ON \
@@ -254,6 +254,8 @@ cp -rpf $WASI_SYSROOT/lib/wasm32-wasi /usr/lib/wasm32-wasi
 cmake --install $__dirname/build/libcxx-threads --prefix $WASI_SYSROOT
 cp -rpf $WASI_SYSROOT/include /usr/include/wasm32-wasi-threads
 cp -rpf $WASI_SYSROOT/lib/wasm32-wasi-threads /usr/lib/wasm32-wasi-threads
+
+cp -rpf $WASI_SYSROOT/include/c++ /usr/include/
 
 # rm -rf $__dirname/build
 # rm -rf $REPODIR
