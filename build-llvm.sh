@@ -153,7 +153,7 @@ set(CMAKE_RANLIB \${WASI_SDK_PREFIX}/bin/llvm-ranlib\${WASI_HOST_EXE_SUFFIX})
 set(CMAKE_C_COMPILER_TARGET \${triple})
 set(CMAKE_CXX_COMPILER_TARGET \${triple})
 set(CMAKE_ASM_COMPILER_TARGET \${triple})
-set(CMAKE_SYSROOT \${WASI_SDK_PREFIX}/share/wasi-sysroot)
+# set(CMAKE_SYSROOT \${WASI_SDK_PREFIX}/share/wasi-sysroot)
 
 # Don't look in the sysroot for executables to run during the build
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
@@ -195,7 +195,7 @@ set(CMAKE_RANLIB \${WASI_SDK_PREFIX}/bin/llvm-ranlib\${WASI_HOST_EXE_SUFFIX})
 set(CMAKE_C_COMPILER_TARGET \${triple})
 set(CMAKE_CXX_COMPILER_TARGET \${triple})
 set(CMAKE_ASM_COMPILER_TARGET \${triple})
-set(CMAKE_SYSROOT \${WASI_SDK_PREFIX}/share/wasi-sysroot)
+# set(CMAKE_SYSROOT \${WASI_SDK_PREFIX}/share/wasi-sysroot)
 
 # Don't look in the sysroot for executables to run during the build
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
